@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1710003680 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\main.cpp
+1710072328 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\main.cpp
 	"Game.h"
 
-1710003680 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\game.h
+1710072035 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\game.h
 	<iostream>
 	<cmath>
 	<SDL.h>
@@ -407,18 +407,30 @@
 	"begin_code.h"
 	"close_code.h"
 
-1709999537 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\init.cpp
-	"Game.h"
+1710066165 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\init.cpp
 
-1709998489 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\usedlib.h
+1710061228 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\usedlib.h
 	<iostream>
 	<cmath>
 	<SDL.h>
 	<SDL_image.h>
 
-1709998545 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\loadmedia.cpp
+1710066165 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\loadmedia.cpp
+
+1710066165 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\close.cpp
+
+1710064080 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\loadmedia.h
 	"UsedLib.h"
 
-1709998821 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\close.cpp
+1710064385 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\init.h
 	"UsedLib.h"
+
+1710063996 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\gvar.h
+	"UsedLib.h"
+
+1710062811 f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\close.h
+	"UsedLib.h"
+
+1710066165 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flamechaser\game_func.cpp
+	"Game.h"
 

@@ -1,13 +1,13 @@
 #include "Game.h"
 
-int main(int argc, char** argv){
+int main(int argc, char* args[]){
     if ( !init() ){
-        printf( "Failed to initialize!\n" );
+        cout << "Failed to initialize!" << endl;
     }
     else
     {
         if(!loadMedia())
-            printf( "Failed to load media!\n" );
+            cout << "Failed to load media!" << endl;
         else
         {
             bool quit = false;
@@ -22,10 +22,14 @@ int main(int argc, char** argv){
                 }
 
                 // Clear Screen
+                SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
                 SDL_RenderClear(gRenderer);
 
-                //Render Texture to Screen
-                SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+                //Render Background Texture to screen
+                bgTexture.render(0,0);
+
+                //Render GameStage to Screen
+                StageTexture.render(333, 150);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
@@ -52,7 +56,7 @@ bool init(){
             cout << "Warning: Linear texture filtering not enabled!";
 
         //Create Window
-        gWindow = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        gWindow = SDL_CreateWindow("FlamesChaser", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
         if (gWindow == NULL)
         {
@@ -85,7 +89,21 @@ bool init(){
     return success;
 }
 
-SDL_Texture* loadTexture(string path){
+stage::stage(){
+    //Initialize
+    m_Texture = NULL;
+    mWidth = 0;
+    mHeight = 0;
+}
+
+stage::~stage(){
+    //Deallocate
+    free();
+}
+
+bool stage::loadImg(string path){
+    //Get rid of pre-existing texture
+    free();
     //the final texture
     SDL_Texture* newTexture = NULL;
 
@@ -95,27 +113,88 @@ SDL_Texture* loadTexture(string path){
         cout << "Unable to load image " << SDL_GetError() << endl;
     else
     {
+        //Color key image
+        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 255, 255 , 255));
+
         //Create texture from surface pixels
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-
         if(newTexture == NULL)
             cout << "Unable to create texture from " << path.c_str() << endl;
+        else
+        {
+            //Get image dimensions
+            mWidth = loadedSurface->w;
+            mHeight = loadedSurface->h;
+        }
 
-        //Clear old texture
+        //Clear old loaded surface
         SDL_FreeSurface(loadedSurface);
     }
-    return newTexture;
+    m_Texture = newTexture;
+    return m_Texture != NULL;
 }
+
+void stage::free(){
+    //Free texture if it exists
+    if (m_Texture != NULL)
+    {
+        SDL_DestroyTexture(m_Texture);
+        m_Texture = NULL;
+        mWidth = 0;
+        mHeight = 0;
+    }
+}
+
+int stage::getWidth(){
+    return mWidth;
+}
+
+int stage::getHeight(){
+    return mHeight;
+}
+
+void stage::render(int x, int y){
+    //Set rendering space and render to screen
+    SDL_Rect renderStage = {x, y, mWidth, mHeight};
+    SDL_RenderCopy(gRenderer, m_Texture, NULL, &renderStage);
+}
+
+//SDL_Texture* loadTexture(string path){
+//    //the final texture
+//    SDL_Texture* newTexture = NULL;
+//
+//    //Load image at specified path
+//    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+//    if (loadedSurface == NULL)
+//        cout << "Unable to load image " << SDL_GetError() << endl;
+//    else
+//    {
+//        //Create texture from surface pixels
+//        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+//
+//        if(newTexture == NULL)
+//            cout << "Unable to create texture from " << path.c_str() << endl;
+//
+//        //Clear old texture
+//        SDL_FreeSurface(loadedSurface);
+//    }
+//    return newTexture;
+//}
 
 bool loadMedia(){
     //Initialize flag
     bool success = true;
 
-    //Load PNG texture
-    gTexture = loadTexture("img/Hall_29.png");
-    if (gTexture == NULL)
+    //Load the Game Stage
+    if ( !StageTexture.loadImg("img/Gamesv3.png"))
     {
-        std::cout << "Failed to load image " << endl;
+        cout << "Failed to load Game Stage! " << endl;
+        success = false;
+    }
+
+    if (!bgTexture.loadImg("F:/UET - VNU/LapTrinhNangCao/FlamesChaser/FlameChaser/img/Hall_29.png"))
+    {
+        cout << "Failed to load Background! " << endl;
         success = false;
     }
     return success;
@@ -123,8 +202,8 @@ bool loadMedia(){
 
 void close(){
     //Free loaded image
-    SDL_DestroyTexture(gTexture);
-    gTexture = NULL;
+    StageTexture.free();
+    bgTexture.free();
 
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
