@@ -16,6 +16,10 @@ game_screen bgTexture;
 
 gBalls ball;
 
+SDL_Rect ballClips[4];
+
+int UsedBalls = 0;
+
 //Initialize SDL
 bool init();
 
@@ -50,7 +54,7 @@ int main(int argc, char* args[]){
             SDL_Event e;
 
             //Create Ball's movement
-            movement Ball_move;
+            movement Ball_move[300];
 
             //Take ball dimension
 //            movement::Ball_Width = gBalls::getWidth();
@@ -65,10 +69,14 @@ int main(int argc, char* args[]){
                         quit = true;
 
                     //Handle input for ball
-                    Ball_move.handleEvent(e);
+                    Ball_move[UsedBalls].handleEvent(e);
                 }
 
                 frameStart = SDL_GetTicks();
+
+                Ball_move[UsedBalls].Ball_Width = ballClips[UsedBalls%4].w;
+                Ball_move[UsedBalls].Ball_Height = ballClips[UsedBalls%4].h;
+
 
                 // Clear Screen
                 SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
@@ -78,30 +86,19 @@ int main(int argc, char* args[]){
                 bgTexture.render(0,0, gRenderer);
 
                 //Render GameStage to Screen
-                StageTexture.render(333, 150, gRenderer);
+                StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
                 //move the ball
-                Ball_move.moving();
-
-//                //Set action based on current key input
-//                const Uint8* currentKeystates = SDL_GetKeyboardState(NULL);
-//                if (currentKeystates[SDL_SCANCODE_LEFT])
-//                {
-//                    Ball_move.bVelX -= Ball_move.Ball_Vel;
-//                }
-//                else if (currentKeystates[SDL_SCANCODE_RIGHT])
-//                {
-//                    Ball_move.bVelX += Ball_move.Ball_Vel;
-//                }
-//                else
-//                {
-//                    Ball_move.bVelX = 0;
-//                }
+                Ball_move[UsedBalls].moving();
 
                 //Render ball
-                ball.render(Ball_move.getBallPosX(), Ball_move.getBallPosY(), gRenderer);
+                for (int i = 0; i < UsedBalls+1; i++)
+                    ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[i%4]);
 
+                if (Ball_move[UsedBalls].getBallPosY() > SCREEN_HEIGHT/4 + 20 && Ball_move[UsedBalls].getBallVelX() == 0 && Ball_move[UsedBalls].getBallVelY() == 0 )
+                    UsedBalls++;
 
+                cout << UsedBalls;
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
@@ -145,6 +142,10 @@ bool init(){
         {
             //Create Renderer for window
             gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+//            for (int i = 0; i < 300; i++){
+//                BallRenderer[i] = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+//                SDL_SetRenderDrawColor(BallRenderer[i], 255, 255, 255, 255);
+//            }
 
             if (gRenderer == NULL)
             {
@@ -178,16 +179,44 @@ bool loadMedia(){
         success = false;
     }
 
-    if (!bgTexture.loadImg("F:/UET - VNU/LapTrinhNangCao/FlamesChaser/FlameChaser/img/Hall_29.png", gRenderer))
+    if (!bgTexture.loadImg("img/Hall_29.jpg", gRenderer))
     {
         cout << "Failed to load Background! " << endl;
         success = false;
     }
-    if (! ball.loadImage("img/mobius_ballv4.png", gRenderer))
+    if (! ball.loadImage("img/g_m_e_f.png", gRenderer))
     {
+        //cout << BallRenderer[0] << endl;
         cout << "Failed to load Object \n";
         success = false;
     }
+
+    //Select sprite
+    ballClips[0].x = 60;
+    ballClips[0].y = 0;
+    ballClips[0].w = 40;
+    ballClips[0].h = 35;
+
+    ballClips[1].x = 0;
+    ballClips[1].y = 0;
+    ballClips[1].w = 60;
+    ballClips[1].h = 46;
+
+    ballClips[2].x = 100;
+    ballClips[2].y = 0;
+    ballClips[2].w = 100;
+    ballClips[2].h = 93;
+
+    ballClips[3].x = 200;
+    ballClips[3].y = 0;
+    ballClips[3].w = 80;
+    ballClips[3].h = 67;
+
+//    if (! ball[1].loadImage("img/Griseo_ballv2.png", gRenderer))
+//    {
+//        cout << "Failed to load Object \n";
+//        success = false;
+//    }
     return success;
 }
 

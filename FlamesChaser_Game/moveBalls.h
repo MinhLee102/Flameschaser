@@ -7,10 +7,7 @@
 class movement{
 public:
     //Dimension of ball
-    static const int Ball_Width = 40, Ball_Height = 40;
-
-    //Velocity of ball
-    int bVelX, bVelY;
+    int Ball_Width , Ball_Height;
 
     //Maximum velocity
     static const int Ball_Vel = 5;
@@ -25,15 +22,22 @@ public:
     void moving();
 
     //Shows ball on the screen
-    void render(SDL_Renderer* gRenderer);
+    //  void render(SDL_Renderer* gRenderer);
 
     int getBallPosX(){return bPosX;};
 
     int getBallPosY(){return bPosY;};
 
+    int getBallVelX(){return bVelX;};
+
+    int getBallVelY(){return bVelY;};
+
 private:
     //The x and y offsets of ball
     int bPosX, bPosY;
+
+    //Velocity of ball
+    int bVelX, bVelY;
 
 };
 

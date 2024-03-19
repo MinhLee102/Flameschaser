@@ -61,8 +61,15 @@ int gBalls::getHeight(){
     return b_height;
 }
 
-void gBalls::render(int x, int y, SDL_Renderer* gRenderer){
+void gBalls::render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect *clip){
     SDL_Rect GameBalls = {x, y, b_width, b_height};
-    SDL_RenderCopy(gRenderer, Balls, NULL, &GameBalls );
+    if (clip != NULL)
+    {
+        GameBalls.w = clip->w;
+        GameBalls.h = clip->h;
+    }
+    SDL_RenderCopy(gRenderer, Balls, clip, &GameBalls );
+
+    clip = NULL;
 }
 

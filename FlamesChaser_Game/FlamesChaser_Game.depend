@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1710434305 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
+1710865484 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
 	"GameLib.h"
 	"game_screen.h"
 	"init.h"
@@ -408,7 +408,7 @@
 1710169840 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.cpp
 	"GameLib.h"
 
-1710412089 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
+1710692144 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
 	<iostream>
 	<cmath>
 	<SDL.h>
@@ -417,7 +417,7 @@
 	<SDL_mixer.h>
 	<sstream>
 
-1710170921 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.cpp
+1710690313 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.cpp
 	"game_screen.h"
 
 1710346393 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.h
@@ -434,11 +434,12 @@
 
 1710342844 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\init.h
 
-1710427823 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.cpp
+1710864362 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.cpp
 	"GameObject.h"
 
-1710414015 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.h
+1710863733 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.h
 	"GameLib.h"
+	"moveBalls.h"
 
 1705848875 c:\mingw_dev_lib\include\sdl2\sdl_ttf.h
 	"SDL.h"
@@ -454,10 +455,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1710434517 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
+1710863733 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
 	"moveBalls.h"
 
-1710433649 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
+1710767938 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
 	"GameLib.h"
 	"GameObject.h"
 

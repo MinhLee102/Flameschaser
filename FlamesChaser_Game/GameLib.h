@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 512;
+const int SCREEN_WIDTH = 1400;
+const int SCREEN_HEIGHT = 700;
 
 #endif // GAMELIB_H
