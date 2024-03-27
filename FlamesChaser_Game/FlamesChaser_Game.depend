@@ -1,8 +1,7 @@
 # depslib dependency file v1.0
-1710865484 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
+1711511302 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
 	"GameLib.h"
 	"game_screen.h"
-	"init.h"
 	"GameObject.h"
 	"moveBalls.h"
 
@@ -408,7 +407,7 @@
 1710169840 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.cpp
 	"GameLib.h"
 
-1710692144 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
+1710898902 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
 	<iostream>
 	<cmath>
 	<SDL.h>
@@ -416,11 +415,12 @@
 	<SDL_ttf.h>
 	<SDL_mixer.h>
 	<sstream>
+	<vector>
 
 1710690313 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.cpp
 	"game_screen.h"
 
-1710346393 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.h
+1711510286 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.h
 	"GameLib.h"
 
 1710425500 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\keyinput.cpp
@@ -437,7 +437,7 @@
 1710864362 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.cpp
 	"GameObject.h"
 
-1710863733 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.h
+1711510304 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gameobject.h
 	"GameLib.h"
 	"moveBalls.h"
 
@@ -455,10 +455,16 @@
 	"begin_code.h"
 	"close_code.h"
 
-1710863733 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
+1711511230 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
 	"moveBalls.h"
 
-1710767938 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
+1711511295 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
 	"GameLib.h"
 	"GameObject.h"
+
+1711375703 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\collision.cpp
+	"Collision.h"
+
+1711375703 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\collision.h
+	"GameLib.h"
 

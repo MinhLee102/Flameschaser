@@ -1,6 +1,5 @@
 #include "GameLib.h"
 #include "game_screen.h"
-#include "init.h"
 #include "GameObject.h"
 #include "moveBalls.h"
 
@@ -56,10 +55,6 @@ int main(int argc, char* args[]){
             //Create Ball's movement
             movement Ball_move[300];
 
-            //Take ball dimension
-//            movement::Ball_Width = gBalls::getWidth();
-//            movement::Ball_Height = gBalls::getHeight();
-
             while (!quit)
             {
                 while (SDL_PollEvent(&e) != 0)
@@ -76,6 +71,7 @@ int main(int argc, char* args[]){
 
                 Ball_move[UsedBalls].Ball_Width = ballClips[UsedBalls%4].w;
                 Ball_move[UsedBalls].Ball_Height = ballClips[UsedBalls%4].h;
+                Ball_move[UsedBalls].createCollider();
 
 
                 // Clear Screen
@@ -88,10 +84,10 @@ int main(int argc, char* args[]){
                 //Render GameStage to Screen
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
-                //move the ball
-                Ball_move[UsedBalls].moving();
+                //move the ball and Ball collider box
+                Ball_move[UsedBalls].moving(Ball_move, UsedBalls);
 
-                //Render ball
+                //Render ball and check collsion
                 for (int i = 0; i < UsedBalls+1; i++)
                     ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[i%4]);
 
@@ -99,6 +95,8 @@ int main(int argc, char* args[]){
                     UsedBalls++;
 
                 cout << UsedBalls;
+
+                //cout << UsedBalls;
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
@@ -119,7 +117,7 @@ bool init(){
     bool success = true;
 
     //Initialize SDL
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0)
+    if ( SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         cout << "SDL could not initialize! " << SDL_GetError() << endl;
         success = false;
@@ -142,10 +140,6 @@ bool init(){
         {
             //Create Renderer for window
             gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-//            for (int i = 0; i < 300; i++){
-//                BallRenderer[i] = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-//                SDL_SetRenderDrawColor(BallRenderer[i], 255, 255, 255, 255);
-//            }
 
             if (gRenderer == NULL)
             {

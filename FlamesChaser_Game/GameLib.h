@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 

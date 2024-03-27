@@ -15,9 +15,6 @@ public:
     //Load img
     bool loadImage(string path, SDL_Renderer* gRenderer);
 
-    //Update width, height
-    void update(int w, int h);
-
     //Deallocate texture
     void free();
 
