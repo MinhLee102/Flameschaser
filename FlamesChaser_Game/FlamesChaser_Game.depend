@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1711511302 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
+1712114531 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
 	"GameLib.h"
 	"game_screen.h"
 	"GameObject.h"
@@ -407,7 +407,7 @@
 1710169840 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.cpp
 	"GameLib.h"
 
-1710898902 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
+1712113962 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\gamelib.h
 	<iostream>
 	<cmath>
 	<SDL.h>
@@ -416,6 +416,7 @@
 	<SDL_mixer.h>
 	<sstream>
 	<vector>
+	<time.h>
 
 1710690313 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\game_screen.cpp
 	"game_screen.h"
@@ -455,10 +456,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1711511230 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
+1712478219 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
 	"moveBalls.h"
 
-1711511295 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
+1712477618 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
 	"GameLib.h"
 	"GameObject.h"
 

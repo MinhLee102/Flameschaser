@@ -33,6 +33,7 @@ int main(int argc, char* args[]){
     //Limit framerate
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
+    srand(time(0));
 
     Uint32 frameStart;
     int frameTime;
@@ -55,6 +56,14 @@ int main(int argc, char* args[]){
             //Create Ball's movement
             movement Ball_move[300];
 
+            //init flag
+            bool merger[300];
+
+            int ball_num[300];
+
+            for (int i = 0; i < 50; i++)
+                ball_num[i] = rand()%4;
+
             while (!quit)
             {
                 while (SDL_PollEvent(&e) != 0)
@@ -69,8 +78,8 @@ int main(int argc, char* args[]){
 
                 frameStart = SDL_GetTicks();
 
-                Ball_move[UsedBalls].Ball_Width = ballClips[UsedBalls%4].w;
-                Ball_move[UsedBalls].Ball_Height = ballClips[UsedBalls%4].h;
+                Ball_move[UsedBalls].Ball_Width = ballClips[ball_num[UsedBalls]].w;
+                Ball_move[UsedBalls].Ball_Height = ballClips[ball_num[UsedBalls]].h;
                 Ball_move[UsedBalls].createCollider();
 
 
@@ -85,11 +94,14 @@ int main(int argc, char* args[]){
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
                 //move the ball and Ball collider box
-                Ball_move[UsedBalls].moving(Ball_move, UsedBalls);
+                Ball_move[UsedBalls].moving(Ball_move, UsedBalls, merger, ball_num, ballClips);
 
                 //Render ball and check collsion
-                for (int i = 0; i < UsedBalls+1; i++)
-                    ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[i%4]);
+                for (int i = 0; i < UsedBalls+1; i++){
+                    if (merger[i] == true)
+                        continue;
+                    ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[ball_num[i]]);
+                }
 
                 if (Ball_move[UsedBalls].getBallPosY() > SCREEN_HEIGHT/4 + 20 && Ball_move[UsedBalls].getBallVelX() == 0 && Ball_move[UsedBalls].getBallVelY() == 0 )
                     UsedBalls++;
@@ -196,15 +208,20 @@ bool loadMedia(){
     ballClips[1].w = 60;
     ballClips[1].h = 46;
 
-    ballClips[2].x = 100;
-    ballClips[2].y = 0;
-    ballClips[2].w = 100;
-    ballClips[2].h = 93;
+//    ballClips[2].x = 100;
+//    ballClips[2].y = 0;
+//    ballClips[2].w = 100;
+//    ballClips[2].h = 93;
 
-    ballClips[3].x = 200;
+    ballClips[2].x = 200;
+    ballClips[2].y = 0;
+    ballClips[2].w = 80;
+    ballClips[2].h = 67;
+
+    ballClips[3].x = 100;
     ballClips[3].y = 0;
-    ballClips[3].w = 80;
-    ballClips[3].h = 67;
+    ballClips[3].w = 100;
+    ballClips[3].h = 93;
 
 //    if (! ball[1].loadImage("img/Griseo_ballv2.png", gRenderer))
 //    {

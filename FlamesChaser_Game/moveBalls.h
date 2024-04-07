@@ -17,17 +17,23 @@ public:
     //Maximum velocity
     static const int Ball_Vel = 8;
 
+    static const int Ball_Ac = 5;
+
     //Init variable
     movement();
 
     //Take key press and adjust velocity;
     void handleEvent(SDL_Event &e);
 
-    void gravity();
+    void gravity(bool &checkGrav);
+
+    void changeRadius(Circle& a, int newDiameter);
+
+    void destroyCollider(Circle& a);
 
     //Move the ball
     //void moving(Circle Balls[], int n);
-    void moving(movement Ball_move[], int n);
+    void moving(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[]);
 
     int getBallPosX(){return bPosX;};
 
@@ -39,7 +45,7 @@ public:
 
     Circle& getCollider();
 
-    void updateVel(int vx);
+//    void updateVel(int vx);
 
     //Update collider
     void createCollider();
@@ -51,11 +57,16 @@ private:
     //Velocity of ball
     int bVelX, bVelY;
 
+    //Acceleration of ball
+    int bAX, bAY;
+
     //Collider of ball
     Circle mCollider;
 
     //Moves the collision circle relative to the dot's offset
     void shiftCollider();
+
+    bool checkGrav;
 };
 
     //Check collision between 2 balls
