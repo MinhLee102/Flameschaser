@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1712114531 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
+1712812010 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\main.cpp
 	"GameLib.h"
 	"game_screen.h"
 	"GameObject.h"
 	"moveBalls.h"
+	"Menu.h"
 
 1706832967 c:\mingw_dev_lib\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -456,10 +457,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1712478219 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
+1712723224 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.cpp
 	"moveBalls.h"
 
-1712477618 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
+1712723240 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\moveballs.h
 	"GameLib.h"
 	"GameObject.h"
 
@@ -468,4 +469,11 @@
 
 1711375703 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\collision.h
 	"GameLib.h"
+
+1712812114 f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\menu.h
+	"GameLib.h"
+	"game_screen.h"
+
+1712812283 source:f:\uet - vnu\laptrinhnangcao\flameschaser\flameschaser_game\menu.cpp
+	"Menu.h"
 

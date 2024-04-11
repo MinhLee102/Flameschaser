@@ -71,7 +71,7 @@ void movement::handleEvent(SDL_Event &e){
 void movement::gravity(bool &checkGrav){
     if (checkGrav == true)
     {
-        bVelY = Ball_Ac;
+       bVelY = Ball_Ac;
     }
     bPosY += bVelY;
 }
@@ -86,11 +86,13 @@ void movement::changeRadius(Circle& a, int newDiameter){
     a.r = newDiameter/2;
 }
 
+
 void movement::moving(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[]){
     for (int i = 0; i < n-1; i++)
     {
         for (int j = i+1; j < n; j++)
         {
+            //int distance;
             //check collision
             if (checkCollision(Ball_move[i].getCollider(), Ball_move[j].getCollider()))
             {
@@ -102,14 +104,34 @@ void movement::moving(movement Ball_move[], int n, bool merger[], int ball_num[]
 
                     //added in array of add ball
                     merger[i] = true;
+
+                    //upgrade balls
                     ball_num[j]++;
                     Ball_move[j].Ball_Height = ballClips[ball_num[j]].h;
                     Ball_move[j].Ball_Width = ballClips[ball_num[j]].w;
                     Ball_move[j].changeRadius(Ball_move[j].getCollider(),Ball_move[j].Ball_Width);
+                    Ball_move[j].bPosY = SCREEN_HEIGHT - 70 - Ball_move[j].Ball_Height;
                 }
                 else
                 {
-                    //move ball in two direction if collided
+//                    int overLap = (Ball_move[i].getCollider().r  + Ball_move[j].getCollider().r - distance)/2;
+//                    //Calculate new velocities using conservation of momentum and energy
+//                        int nx = (Ball_move[i].bPosX - Ball_move[j].bPosX) / distance;
+//                        int ny = (Ball_move[i].bPosY - Ball_move[j].bPosY) / distance;
+//
+//                        int p = 2 * (Ball_move[i].bVelX * nx + Ball_move[i].bVelY * ny - Ball_move[j].bVelX * nx - Ball_move[j].bVelY * ny) / (Ball_move[i].bMass + Ball_move[j].bMass);
+//
+//                        Ball_move[i].bVelX -= p * Ball_move[j].bMass * nx;
+//                        Ball_move[i].bVelY -= p * Ball_move[j].bMass * ny;
+//                        Ball_move[j].bVelX += p * Ball_move[i].bMass * nx;
+//                        Ball_move[j].bVelY += p * Ball_move[i].bMass * ny;
+//
+//                    //Separate the orbs to prevent them from overlapping
+//                        //overlap = (self.radius + other_orb.radius - distance) / 2
+//                        Ball_move[i].bPosX -= overLap * nx;
+//                        Ball_move[i].bPosY -= overLap * ny;
+//                        Ball_move[j].bPosX += overLap * nx;
+//                        Ball_move[j].bPosY += overLap * ny;
                     if (Ball_move[i].getCollider().x > Ball_move[j].getCollider().x)
                     {
                         Ball_move[i].bPosX += 5;
@@ -120,6 +142,15 @@ void movement::moving(movement Ball_move[], int n, bool merger[], int ball_num[]
                         Ball_move[i].bPosX -= 5;
                         Ball_move[j].bPosX += 5;
                     }
+                    if (Ball_move[j].bPosX < SCREEN_WIDTH/3 + 20)
+                        Ball_move[j].bPosX = SCREEN_WIDTH/3 + 20;
+                    if (Ball_move[j].bPosX + Ball_move[j].Ball_Width > SCREEN_WIDTH/3 + 450)
+                        Ball_move[j].bPosX = SCREEN_WIDTH/3 + 450 - Ball_Width;
+
+                    if (Ball_move[i].bPosX < SCREEN_WIDTH/3 + 20)
+                        Ball_move[i].bPosX = SCREEN_WIDTH/3 + 20;
+                    if (Ball_move[i].bPosX + Ball_move[j].Ball_Width > SCREEN_WIDTH/3 + 450)
+                        Ball_move[i].bPosX = SCREEN_WIDTH/3 + 450 - Ball_Width;
                 }
                     Ball_move[i].shiftCollider();
                     Ball_move[j].shiftCollider();
@@ -137,17 +168,13 @@ void movement::moving(movement Ball_move[], int n, bool merger[], int ball_num[]
     bPosX += bVelX;
     shiftCollider();
 
-    if ((bPosX < SCREEN_WIDTH/3 + 20)|| (bPosX + Ball_Width > SCREEN_WIDTH/3 + 450)){
-        bPosX -= bVelX;
-    }
-
-    //Apply Gravity-like effect
-    //bPosY += bVelY;
     gravity(checkGrav);
     shiftCollider();
 
-    if (bPosY + Ball_Height > SCREEN_HEIGHT - 70)
+    if (bPosY + Ball_Height > SCREEN_HEIGHT - 70){
         bVelY = 0;
+        bPosY = SCREEN_HEIGHT - 70 - Ball_Height;
+    }
 }
 
 double distance2(int x1, int y1, int x2, int y2){
@@ -161,7 +188,10 @@ bool checkCollision(Circle& a, Circle& b){
 
     //Collision happens when distance between centers smaller than radius of 2 circles combined
     if (TotalRadius2 >= distance2(a.x, a.y, b.x, b.y))
-        check = true;
+        {
+            check = true;
+            //distance = sqrt(distance2(a.x, a.y, b.x, b.y));
+        }
     else
         check = false;
     return check;

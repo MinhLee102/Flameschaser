@@ -2,6 +2,7 @@
 #include "game_screen.h"
 #include "GameObject.h"
 #include "moveBalls.h"
+#include "Menu.h"
 
 //Create Window to render to
 SDL_Window* gWindow = NULL;
@@ -12,6 +13,8 @@ SDL_Renderer* gRenderer = NULL;
 game_screen StageTexture;
 
 game_screen bgTexture;
+
+game_screen menu;
 
 gBalls ball;
 
@@ -50,8 +53,12 @@ int main(int argc, char* args[]){
             //Init quit flags
             bool quit = false;
 
+            //Init menu flags
+            bool isMenu = true;
+
             //Handle event
             SDL_Event e;
+            SDL_Event m;
 
             //Create Ball's movement
             movement Ball_move[300];
@@ -61,7 +68,7 @@ int main(int argc, char* args[]){
 
             int ball_num[300];
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 80; i++)
                 ball_num[i] = rand()%4;
 
             while (!quit)
@@ -75,6 +82,11 @@ int main(int argc, char* args[]){
                     //Handle input for ball
                     Ball_move[UsedBalls].handleEvent(e);
                 }
+
+                //create game's menu
+                openMenu(isMenu, gRenderer, menu, m);
+                SDL_RenderClear(gRenderer);
+                menu.free();
 
                 frameStart = SDL_GetTicks();
 
@@ -94,9 +106,11 @@ int main(int argc, char* args[]){
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
                 //move the ball and Ball collider box
+                //for (int i = 0; i < UsedBalls+1; i++)
                 Ball_move[UsedBalls].moving(Ball_move, UsedBalls, merger, ball_num, ballClips);
 
-                //Render ball and check collsion
+                cout << UsedBalls << " ";
+                //Render ball and check border
                 for (int i = 0; i < UsedBalls+1; i++){
                     if (merger[i] == true)
                         continue;
@@ -106,7 +120,7 @@ int main(int argc, char* args[]){
                 if (Ball_move[UsedBalls].getBallPosY() > SCREEN_HEIGHT/4 + 20 && Ball_move[UsedBalls].getBallVelX() == 0 && Ball_move[UsedBalls].getBallVelY() == 0 )
                     UsedBalls++;
 
-                cout << UsedBalls;
+                //cout << UsedBalls;
 
                 //cout << UsedBalls;
                 //Update screen
@@ -190,6 +204,11 @@ bool loadMedia(){
         cout << "Failed to load Background! " << endl;
         success = false;
     }
+    if (!menu.loadImg("img/startMenuv3.png", gRenderer))
+    {
+        cout << "Failed to load Menu! " << endl;
+        success = false;
+    }
     if (! ball.loadImage("img/g_m_e_f.png", gRenderer))
     {
         //cout << BallRenderer[0] << endl;
@@ -235,6 +254,7 @@ void close(){
     //Free loaded image
     StageTexture.free();
     bgTexture.free();
+    menu.free();
     ball.free();
 
     //Destroy window

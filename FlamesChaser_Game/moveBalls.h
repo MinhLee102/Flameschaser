@@ -17,7 +17,7 @@ public:
     //Maximum velocity
     static const int Ball_Vel = 8;
 
-    static const int Ball_Ac = 5;
+    static const int Ball_Ac = 10;
 
     //Init variable
     movement();
