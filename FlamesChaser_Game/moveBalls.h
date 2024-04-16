@@ -3,10 +3,13 @@
 
 #include "GameLib.h"
 #include "GameObject.h"
+#include "Physics/FlatPhysics.h"
 
 struct Circle{
     int x, y;
     int r;
+    //Ball mass
+    int m;
 };
 
 class movement{
@@ -23,17 +26,18 @@ public:
     movement();
 
     //Take key press and adjust velocity;
-    void handleEvent(SDL_Event &e);
+    void handleEvent(SDL_Event &e, bool drop[], int UsedBalls);
 
     void gravity(bool &checkGrav);
 
-    void changeRadius(Circle& a, int newDiameter);
+    void changeRadiusnMass(Circle& a, int newDiameter);
 
     void destroyCollider(Circle& a);
 
-    //Move the ball
-    //void moving(Circle Balls[], int n);
-    void moving(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[]);
+    //Move the ball and handle collision
+    void motionNcollision(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool drop[]);
+
+    void updateRenderPos();
 
     int getBallPosX(){return bPosX;};
 
@@ -51,8 +55,11 @@ public:
     void createCollider();
 
 private:
-    //The x and y offsets of ball
+    //The x and y to Render ball
     int bPosX, bPosY;
+
+    //the x and y of center
+    int x, y;
 
     //Velocity of ball
     int bVelX, bVelY;

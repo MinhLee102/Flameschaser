@@ -16,4 +16,8 @@ using namespace std;
 const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 700;
 
+const int GAME_LEFT_SIDE = SCREEN_WIDTH/3 + 22;
+const int GAME_RIGHT_SIDE = SCREEN_WIDTH/3 + 450;
+const int GAME_BOTTOM = SCREEN_HEIGHT - 70;
+
 #endif // GAMELIB_H

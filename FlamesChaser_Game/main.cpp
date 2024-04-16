@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "moveBalls.h"
 #include "Menu.h"
+#include "Physics/FlatPhysics.h"
 
 //Create Window to render to
 SDL_Window* gWindow = NULL;
@@ -21,6 +22,8 @@ gBalls ball;
 SDL_Rect ballClips[4];
 
 int UsedBalls = 0;
+
+//FlatVector v (20, 30);
 
 //Initialize SDL
 bool init();
@@ -65,10 +68,11 @@ int main(int argc, char* args[]){
 
             //init flag
             bool merger[300];
+            bool isDrop[300];
 
             int ball_num[300];
 
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 300; i++)
                 ball_num[i] = rand()%4;
 
             while (!quit)
@@ -80,7 +84,7 @@ int main(int argc, char* args[]){
                         quit = true;
 
                     //Handle input for ball
-                    Ball_move[UsedBalls].handleEvent(e);
+                    Ball_move[UsedBalls].handleEvent(e, isDrop, UsedBalls);
                 }
 
                 //create game's menu
@@ -94,7 +98,6 @@ int main(int argc, char* args[]){
                 Ball_move[UsedBalls].Ball_Height = ballClips[ball_num[UsedBalls]].h;
                 Ball_move[UsedBalls].createCollider();
 
-
                 // Clear Screen
                 SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
                 SDL_RenderClear(gRenderer);
@@ -105,24 +108,20 @@ int main(int argc, char* args[]){
                 //Render GameStage to Screen
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
-                //move the ball and Ball collider box
-                //for (int i = 0; i < UsedBalls+1; i++)
-                Ball_move[UsedBalls].moving(Ball_move, UsedBalls, merger, ball_num, ballClips);
-
-                cout << UsedBalls << " ";
                 //Render ball and check border
-                for (int i = 0; i < UsedBalls+1; i++){
+                for (int i = 0; i <= UsedBalls; i++){
                     if (merger[i] == true)
                         continue;
+                    Ball_move[i].motionNcollision(Ball_move, UsedBalls, merger, ball_num, ballClips, i, isDrop);
+                    Ball_move[i].updateRenderPos();
                     ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[ball_num[i]]);
                 }
 
-                if (Ball_move[UsedBalls].getBallPosY() > SCREEN_HEIGHT/4 + 20 && Ball_move[UsedBalls].getBallVelX() == 0 && Ball_move[UsedBalls].getBallVelY() == 0 )
+                //count the number of the balls were used
+                if(isDrop[UsedBalls] == true){
                     UsedBalls++;
+                }
 
-                //cout << UsedBalls;
-
-                //cout << UsedBalls;
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
@@ -204,7 +203,7 @@ bool loadMedia(){
         cout << "Failed to load Background! " << endl;
         success = false;
     }
-    if (!menu.loadImg("img/startMenuv3.png", gRenderer))
+    if (!menu.loadImg("img/startMenuv4.png", gRenderer))
     {
         cout << "Failed to load Menu! " << endl;
         success = false;

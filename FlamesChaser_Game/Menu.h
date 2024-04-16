@@ -1,5 +1,5 @@
-#ifndef MENU.H
-#define MENU.H
+#ifndef MENU_H
+#define MENU_H
 
 #include "GameLib.h"
 #include "game_screen.h"
