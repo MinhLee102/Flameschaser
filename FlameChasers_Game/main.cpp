@@ -3,7 +3,6 @@
 #include "GameObject.h"
 #include "moveBalls.h"
 #include "Menu.h"
-#include "Physics/FlatPhysics.h"
 
 //Create Window to render to
 SDL_Window* gWindow = NULL;
@@ -19,11 +18,9 @@ game_screen menu;
 
 gBalls ball;
 
-SDL_Rect ballClips[4];
+SDL_Rect ballClips[7];
 
 int UsedBalls = 0;
-
-//FlatVector v (20, 30);
 
 //Initialize SDL
 bool init();
@@ -43,6 +40,9 @@ int main(int argc, char* args[]){
 
     Uint32 frameStart;
     int frameTime;
+
+    //Init flag to track Game over condition
+    bool GameOver = false;
 
     if ( !init() ){
         cout << "Failed to initialize!" << endl;
@@ -64,15 +64,15 @@ int main(int argc, char* args[]){
             SDL_Event m;
 
             //Create Ball's movement
-            movement Ball_move[300];
+            movement Ball_move[400];
 
             //init flag
-            bool merger[300];
-            bool isDrop[300];
+            bool merger[400];
+            bool isDrop = false;
 
-            int ball_num[300];
+            int ball_num[400];
 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 350; i++)
                 ball_num[i] = rand()%4;
 
             while (!quit)
@@ -84,7 +84,7 @@ int main(int argc, char* args[]){
                         quit = true;
 
                     //Handle input for ball
-                    Ball_move[UsedBalls].handleEvent(e, isDrop, UsedBalls);
+                    Ball_move[UsedBalls].handleEvent(e, isDrop);
                 }
 
                 //create game's menu
@@ -108,23 +108,37 @@ int main(int argc, char* args[]){
                 //Render GameStage to Screen
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
+                //Set next ball render position
+                int RPosX = Next_Ball_Center_X - ballClips[ball_num[UsedBalls+1]].w/2;
+                int RPosY = Next_Ball_Center_Y - ballClips[ball_num[UsedBalls+1]].h/2;
+
+                //Render next ball to spawn
+                ball.render(RPosX, RPosY, gRenderer, &ballClips[ball_num[UsedBalls+1]]);
+
                 //Render ball and check border
                 for (int i = 0; i <= UsedBalls; i++){
                     if (merger[i] == true)
                         continue;
-                    Ball_move[i].motionNcollision(Ball_move, UsedBalls, merger, ball_num, ballClips, i, isDrop);
+                    Ball_move[i].motionNcollision(Ball_move, UsedBalls, merger, ball_num, ballClips, i, GameOver);
                     Ball_move[i].updateRenderPos();
                     ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[ball_num[i]]);
                 }
 
-                //count the number of the balls were used
-                if(isDrop[UsedBalls] == true){
-                    UsedBalls++;
+                while(GameOver == true){
+                    cout << "Game Over" << endl;
                 }
+                //count the number of the balls were used
+                if(isDrop == true){
+                    UsedBalls++;
+                    isDrop = false;
+                }
+                //cout << UsedBalls << " ";
 
+                //SDL_RenderDrawLine(gRenderer, 0, 200, SCREEN_WIDTH, 200);
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
+                //cout << HighScore(UsedBalls, merger) << " ";
                 frameTime = SDL_GetTicks() - frameStart;
 
                 if (frameDelay > frameTime)
@@ -198,7 +212,7 @@ bool loadMedia(){
         success = false;
     }
 
-    if (!bgTexture.loadImg("img/Hall_29.jpg", gRenderer))
+    if (!bgTexture.loadImg("img/Hall_29v2.png", gRenderer))
     {
         cout << "Failed to load Background! " << endl;
         success = false;
@@ -208,7 +222,7 @@ bool loadMedia(){
         cout << "Failed to load Menu! " << endl;
         success = false;
     }
-    if (! ball.loadImage("img/g_m_e_f.png", gRenderer))
+    if (! ball.loadImage("img/allCharacters.png", gRenderer))
     {
         //cout << BallRenderer[0] << endl;
         cout << "Failed to load Object \n";
@@ -240,6 +254,21 @@ bool loadMedia(){
     ballClips[3].y = 0;
     ballClips[3].w = 100;
     ballClips[3].h = 93;
+
+    ballClips[4].x = 280;
+    ballClips[4].y = 0;
+    ballClips[4].w = 110;
+    ballClips[4].h = 114;
+
+    ballClips[5].x = 390;
+    ballClips[5].y = 0;
+    ballClips[5].w = 120;
+    ballClips[5].h = 120;
+
+    ballClips[6].x = 510;
+    ballClips[6].y = 0;
+    ballClips[6].w = 130;
+    ballClips[6].h = 127;
 
 //    if (! ball[1].loadImage("img/Griseo_ballv2.png", gRenderer))
 //    {

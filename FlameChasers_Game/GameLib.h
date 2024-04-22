@@ -19,5 +19,9 @@ const int SCREEN_HEIGHT = 700;
 const int GAME_LEFT_SIDE = SCREEN_WIDTH/3 + 22;
 const int GAME_RIGHT_SIDE = SCREEN_WIDTH/3 + 450;
 const int GAME_BOTTOM = SCREEN_HEIGHT - 70;
+const int Next_Ball_Center_X = 110;
+const int Next_Ball_Center_Y = 320;
+
+int HighScore(const int &UsedBalls, bool merger[]);
 
 #endif // GAMELIB_H

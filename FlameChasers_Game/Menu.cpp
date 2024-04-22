@@ -10,6 +10,5 @@ void openMenu(bool &isMenu, SDL_Renderer *gRenderer, game_screen &menu, SDL_Even
         }
                     menu.render(0, 0, gRenderer);
                     SDL_RenderPresent(gRenderer);
-
     }
 }

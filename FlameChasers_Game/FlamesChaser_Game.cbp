@@ -42,10 +42,6 @@
 		<Unit filename="GameObject.h" />
 		<Unit filename="Menu.cpp" />
 		<Unit filename="Menu.h" />
-		<Unit filename="Physics/FlatMath.cpp" />
-		<Unit filename="Physics/FlatMath.h" />
-		<Unit filename="Physics/FlatPhysics.cpp" />
-		<Unit filename="Physics/FlatPhysics.h" />
 		<Unit filename="game_screen.cpp" />
 		<Unit filename="game_screen.h" />
 		<Unit filename="main.cpp" />

@@ -36,7 +36,13 @@ void movement::createCollider(){
         case 40:
             mCollider.m = 8;
         case 50:
-            mCollider.m = 50;
+            mCollider.m = 10;
+        case 55:
+            mCollider.m = 12;
+        case 60:
+            mCollider.m = 14;
+        case 65:
+            mCollider.m = 16;
     }
 }
 
@@ -47,7 +53,7 @@ void movement::shiftCollider(){
     mCollider.y = this->y;
 }
 
-void movement::handleEvent(SDL_Event &e, bool drop[], int UsedBalls){
+void movement::handleEvent(SDL_Event &e, bool &drop){
     //if key pressed
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -61,9 +67,8 @@ void movement::handleEvent(SDL_Event &e, bool drop[], int UsedBalls){
                 bVelX += Ball_Vel;
                 break;
             case SDLK_DOWN:
-                //bVelY += Ball_Vel;
                 checkGrav = true;
-                drop[UsedBalls] = true;
+                drop = true;
                 break;
         }
     }
@@ -81,18 +86,6 @@ void movement::handleEvent(SDL_Event &e, bool drop[], int UsedBalls){
         }
 }
 
-//void movement::updateVel(int vx){
-//    bVelX += vx;
-//}
-
-//void movement::gravity(bool &checkGrav){
-//    if (checkGrav == true)
-//    {
-//       bVelY = Ball_Ac;
-//    }
-//    bPosY += bVelY;
-//}
-
 void movement::destroyCollider(Circle& a){
     a.x = -20;
     a.y = -20;
@@ -105,7 +98,7 @@ void movement::changeRadiusnMass(Circle& a, int newDiameter){
     a.m += 1;
 }
 
-void movement::motionNcollision(movement Ball[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool drop[]){
+void movement::motionNcollision(movement Ball[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool &GameOver){
 //Apply Gravity
 if(checkGrav == true){
         this->y += Ball_Vel;
@@ -177,9 +170,17 @@ else{
         {
             //double distance2 = sqrt((this->x - Ball[i].x)*(this->x - Ball[i].x) + (this->y - Ball[i].y)*(this->y - Ball[i].y));
             double d2 =distance2(this->x, this->y, Ball[i].x, Ball[i].y);
-            if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r))
+            if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r) && this->y >= 200)
             {
-                if(Ball[i].getCollider().r == this->getCollider().r && this->mCollider.r !=50 && Ball[i].y > SCREEN_HEIGHT/4 )
+                if(Ball[i].bPosY < 200 || this->bPosY < 200){
+                    cnt++;
+                    if (cnt == 5)
+                    {
+                        cout << "Game Over" << " ";
+                        cnt = 0;
+                    }
+                }
+                else if(Ball[i].getCollider().r == this->getCollider().r && this->mCollider.r != 65 && Ball[i].y > SCREEN_HEIGHT/4 )
                 {
                     //destroy collision box of 1 ball
                     destroyCollider(Ball[i].getCollider());
@@ -223,6 +224,7 @@ else{
             }
         }
     }
+
     //Reset acceleration
     this->bAX = 0;
     this->bAY = 0;
@@ -252,53 +254,4 @@ bool checkCollision(Circle& a, Circle& b){
         check = false;
     return check;
 }
-
-//        //for (int j = i+1; j < n; j++){
-//            int distance = sqrt((Ball[i].x - Ball[j].x)*(Ball[i].x - Ball[j].x) + (Ball[i].y - Ball[j].y)*(Ball[i].y - Ball[j].y));
-//            if(distance <= Ball[i].getCollider().r + Ball[j].getCollider().r)
-//            {
-//                if(Ball[i].getCollider().r == Ball[j].getCollider().r)
-//                {
-//                    //destroy collision box of 1 ball
-//                    destroyCollider(Ball[i].getCollider());
-//
-//                    //added in array of add ball
-//                    merger[i] = true;
-//
-//                    //upgrade balls
-//                    ball_num[j]++;
-//                    Ball[j].Ball_Height = ballClips[ball_num[j]].h;
-//                    Ball[j].Ball_Width = ballClips[ball_num[j]].w;
-//                    Ball[j].changeRadiusnMass(Ball[j].getCollider(),Ball[j].Ball_Width);
-//                    Ball[j].y = GAME_BOTTOM - Ball[j].getCollider().r/2;
-//                    Ball[j].shiftCollider();
-//                }
-//                else
-//                {
-//                    if(distance != 0)
-//                    {
-//                        //Calculate new velocities using conservation of momentum and energy
-//                        int nx = (Ball[i].x - Ball[j].x)/distance;
-//                        int ny = (Ball[i].y - Ball[j].y)/distance;
-//                        int p = 2 * (Ball[j].bVelX*nx + Ball[j].bVelY*ny - Ball[i].bVelX*nx - Ball[i].bVelY*ny)/(Ball[i].getCollider().m + Ball[j].getCollider().m);
-//                        Ball[j].bVelX -= p * Ball[i].getCollider().m * nx;
-//                        Ball[j].bVelY -= p * Ball[i].getCollider().m * ny;
-//                        Ball[i].bVelX += p * Ball[j].getCollider().m * nx;
-//                        Ball[i].bVelY += p * Ball[j].getCollider().m * ny;
-//
-//                        //seperate the ball to avoid overlapping
-//                        int overLap = (Ball[j].getCollider().r + Ball[i].getCollider().r - distance)/2;
-//                        Ball[j].x -= overLap * nx;
-//                        Ball[j].y -= overLap * ny;
-//                        Ball[i].x += overLap * nx;
-//                        Ball[i].y += overLap * ny;
-//                    }
-//                    Ball[i].shiftCollider();
-//                    Ball[j].shiftCollider();
-//                }
-//
-//            }
-
-       //for (int j = i+1; j < n; j++){
-
 

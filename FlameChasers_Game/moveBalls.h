@@ -3,7 +3,6 @@
 
 #include "GameLib.h"
 #include "GameObject.h"
-#include "Physics/FlatPhysics.h"
 
 struct Circle{
     int x, y;
@@ -22,11 +21,13 @@ public:
 
     static const int Ball_Ac = 10;
 
+    int cnt = 0;
+
     //Init variable
     movement();
 
     //Take key press and adjust velocity;
-    void handleEvent(SDL_Event &e, bool drop[], int UsedBalls);
+    void handleEvent(SDL_Event &e, bool &drop);
 
     void gravity(bool &checkGrav);
 
@@ -35,7 +36,7 @@ public:
     void destroyCollider(Circle& a);
 
     //Move the ball and handle collision
-    void motionNcollision(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool drop[]);
+    void motionNcollision(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool &GameOver);
 
     void updateRenderPos();
 
