@@ -26,6 +26,9 @@ public:
     //Init variable
     movement();
 
+    //Reset game object
+    void reset();
+
     //Take key press and adjust velocity;
     void handleEvent(SDL_Event &e, bool &drop);
 

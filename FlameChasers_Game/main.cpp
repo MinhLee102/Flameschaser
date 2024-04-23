@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "moveBalls.h"
 #include "Menu.h"
+#include "GameOver.h"
 
 //Create Window to render to
 SDL_Window* gWindow = NULL;
@@ -11,15 +12,28 @@ SDL_Renderer* gRenderer = NULL;
 
 //Game screen
 game_screen StageTexture;
-
 game_screen bgTexture;
 
+//Game menu
 game_screen menu;
 
-gBalls ball;
+//GameOver screen
+game_screen End;
 
+//Ball texture
+gBalls ball;
 SDL_Rect ballClips[7];
 
+//Globally used font
+TTF_Font* font = NULL;
+TTF_Font* bestscore = NULL;
+SDL_Color TextColor = {0, 0, 0};
+
+//used to manage word
+game_screen word;
+game_screen bestscr;
+
+//Numbers of balls that were used
 int UsedBalls = 0;
 
 //Initialize SDL
@@ -41,9 +55,6 @@ int main(int argc, char* args[]){
     Uint32 frameStart;
     int frameTime;
 
-    //Init flag to track Game over condition
-    bool GameOver = false;
-
     if ( !init() ){
         cout << "Failed to initialize!" << endl;
     }
@@ -56,12 +67,23 @@ int main(int argc, char* args[]){
             //Init quit flags
             bool quit = false;
 
+            //init score
+            int score = 0;
+
             //Init menu flags
             bool isMenu = true;
+
+            //Init flag to track Game over condition
+            bool GameOver = false;
+
 
             //Handle event
             SDL_Event e;
             SDL_Event m;
+            SDL_Event gov;
+
+            //In memory text stream
+            stringstream timeText;
 
             //Create Ball's movement
             movement Ball_move[400];
@@ -91,6 +113,23 @@ int main(int argc, char* args[]){
                 openMenu(isMenu, gRenderer, menu, m);
                 SDL_RenderClear(gRenderer);
                 menu.free();
+
+                //Update score
+                HighScore(UsedBalls, merger, score);
+
+                //Set text to render
+                timeText.str(" ");
+                timeText << score;
+                if(!word.loadText(timeText.str().c_str(), TextColor, gRenderer, font))
+                {
+                    cout << "Unable to render time text! \n";
+                }
+
+                if(!bestscr.loadText(timeText.str().c_str(), TextColor, gRenderer, bestscore))
+                {
+                    cout << "Unable to render time text! \n";
+                }
+
 
                 frameStart = SDL_GetTicks();
 
@@ -124,17 +163,19 @@ int main(int argc, char* args[]){
                     ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[ball_num[i]]);
                 }
 
-                while(GameOver == true){
-                    cout << "Game Over" << endl;
-                }
+                //print Highscore to the screen
+                word.render(ScorePosX, ScorePosY, gRenderer);
+
+                //Render end screen if conditions are met
+                GameEnd(GameOver, quit, UsedBalls, bgTexture, StageTexture, ball, End, gov, gRenderer, ball_num, merger, Ball_move, score, bestscr);
+
                 //count the number of the balls were used
                 if(isDrop == true){
                     UsedBalls++;
                     isDrop = false;
                 }
-                //cout << UsedBalls << " ";
 
-                //SDL_RenderDrawLine(gRenderer, 0, 200, SCREEN_WIDTH, 200);
+                //SDL_RenderDrawLine(gRenderer, 0, 150, SCREEN_WIDTH, 150);
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
@@ -189,12 +230,21 @@ bool init(){
             {
                 //init renderer color
                 SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+
+                //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
                 if ( !(IMG_Init(imgFlags) & imgFlags))
                     {
                         cout << "SDL image could not be rendered: " << SDL_GetError();
                         success = false;
                     }
+
+                //Initialize SDL_TTF
+				if( TTF_Init() == -1 )
+				{
+					printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+					success = false;
+				}
             }
         }
     }
@@ -222,10 +272,27 @@ bool loadMedia(){
         cout << "Failed to load Menu! " << endl;
         success = false;
     }
-    if (! ball.loadImage("img/allCharacters.png", gRenderer))
+    if (!ball.loadImage("img/allCharacters.png", gRenderer))
     {
-        //cout << BallRenderer[0] << endl;
         cout << "Failed to load Object \n";
+        success = false;
+    }
+    if(!End.loadImg("img/Game_overv2.png", gRenderer))
+    {
+        cout << "Failed to load End Screen \n";
+        success = false;
+    }
+    font = TTF_OpenFont("ShadeBlue.ttf", 28);
+    if(font == NULL)
+    {
+        cout << "Failed to load font \n";
+        success = false;
+    }
+
+    bestscore = TTF_OpenFont("ShadeBlue.ttf", 60);
+    if(bestscore == NULL)
+    {
+        cout << "Failed to load font \n";
         success = false;
     }
 
@@ -284,6 +351,15 @@ void close(){
     bgTexture.free();
     menu.free();
     ball.free();
+    End.free();
+    word.free();
+    bestscr.free();
+
+    //Free global font
+	TTF_CloseFont(font);
+	TTF_CloseFont(bestscore);
+	font = NULL;
+	bestscore = NULL;
 
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -292,6 +368,7 @@ void close(){
     gWindow = NULL;
 
     // Quit SDL Subsystems
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }

@@ -45,6 +45,39 @@ bool game_screen::loadImg(std::string path, SDL_Renderer* gRenderer){
     return m_Texture != NULL;
 }
 
+bool game_screen::loadText(string text, SDL_Color TextColor, SDL_Renderer* gRenderer, TTF_Font* font){
+    //Get rid of pre exist texture
+    free();
+
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), TextColor);
+    if( textSurface == NULL )
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+	else
+	{
+		//Create texture from surface pixels
+        m_Texture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+		if( m_Texture == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+
+	//Return success
+	return m_Texture != NULL;
+}
+
+
 void game_screen::free(){
     //Free texture if it exists
     if (m_Texture != NULL)
@@ -68,5 +101,13 @@ void game_screen::render(int x, int y, SDL_Renderer* gRenderer){
     //Set rendering space and render to screen
     SDL_Rect renderStage = {x, y, mWidth, mHeight};
     SDL_RenderCopy(gRenderer, m_Texture, NULL, &renderStage);
+}
+
+int game_screen::updateRenderPosX(const int x){
+    return x - mWidth/2;
+}
+
+int game_screen::updateRenderPosY(const int y){
+    return y - mHeight/2;
 }
 

@@ -2,11 +2,29 @@
 
 movement::movement(){
     //Init position
-    bPosX = SCREEN_WIDTH/2 - 20;
-    bPosY = SCREEN_HEIGHT/4 - 30;
+//    bPosX = SCREEN_WIDTH/2 - 20;
+//    bPosY = SCREEN_HEIGHT/4 - 30;
 
-    this->x = bPosX + Ball_Width/2;
-    this->y = bPosY + Ball_Height/2;
+    this->x = StartPosX;
+    this->y = StartPosY;
+
+    //Initial velocity
+    bVelX = 0;
+    bVelY = 0;
+
+    //Init acceleretion
+    bAX = 0;
+    bAY = 0;
+
+    checkGrav = false;
+}
+
+void movement::reset(){
+//    bPosX = SCREEN_WIDTH/2 - 20;
+//    bPosY = SCREEN_HEIGHT/4 - 20;
+
+    this->x = StartPosX;
+    this->y = StartPosY;
 
     //Initial velocity
     bVelX = 0;
@@ -95,7 +113,7 @@ void movement::destroyCollider(Circle& a){
 //
 void movement::changeRadiusnMass(Circle& a, int newDiameter){
     a.r = newDiameter/2;
-    a.m += 1;
+    a.m += 2;
 }
 
 void movement::motionNcollision(movement Ball[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool &GameOver){
@@ -121,30 +139,30 @@ if(checkGrav == true){
     this->x += bVelX;
     this->y += bVelY;
 
-    //check collision with bottom
-    if(mCollider.y + mCollider.r >= GAME_BOTTOM){
-        this->y = GAME_BOTTOM - mCollider.r;
-        this->bVelY = -1 * bVelY * 0.2;
-        shiftCollider();
-    }
-    //check collision with sides of box
-    if(this->x - mCollider.r <= GAME_LEFT_SIDE)
-    {
-        this->x = GAME_LEFT_SIDE + mCollider.r;
-        bVelX = -1*bVelX*0.2;
-        bAX = 0.1;
-        shiftCollider();
-    }
-    else if (mCollider.x + mCollider.r >= GAME_RIGHT_SIDE)
-    {
-        this->x = GAME_RIGHT_SIDE - mCollider.r;
-        bVelX = -1*bVelX*0.2;
-        bAX = -0.1;
-        shiftCollider();
-    }
-
-    else
-        bAX = 0;
+//    //check collision with bottom
+//    if(mCollider.y + mCollider.r >= GAME_BOTTOM){
+//        this->y = GAME_BOTTOM - mCollider.r;
+//        this->bVelY = -1 * bVelY * 0.2;
+//        shiftCollider();
+//    }
+//    //check collision with sides of box
+//    if(this->x - mCollider.r <= GAME_LEFT_SIDE)
+//    {
+//        this->x = GAME_LEFT_SIDE + mCollider.r;
+//        bVelX = -1*bVelX*0.2;
+//        bAX = 0.1;
+//        shiftCollider();
+//    }
+//    else if (mCollider.x + mCollider.r >= GAME_RIGHT_SIDE)
+//    {
+//        this->x = GAME_RIGHT_SIDE - mCollider.r;
+//        bVelX = -1*bVelX*0.2;
+//        bAX = -0.1;
+//        shiftCollider();
+//    }
+//
+//    else
+//        bAX = 0;
 
     //cout << bVelX << " " << bVelY;
 }
@@ -166,17 +184,37 @@ else{
             Ball[i].bVelY = -1 * Ball[i].bVelY * 0.2;
             Ball[i].shiftCollider();
         }
+
+        //
+        if(this->x - mCollider.r - 1 <= GAME_LEFT_SIDE && this->y > SCREEN_HEIGHT/4 - 30)
+        {
+            this->x = GAME_LEFT_SIDE + mCollider.r;
+            bVelX = -1*bVelX*0.2;
+            bAX = 0.1;
+            shiftCollider();
+        }
+        else if (mCollider.x + mCollider.r + 1 >= GAME_RIGHT_SIDE && this->y > SCREEN_HEIGHT/4 - 30)
+        {
+            this->x = GAME_RIGHT_SIDE - mCollider.r;
+            bVelX = -1*bVelX*0.2;
+            bAX = -0.1;
+            shiftCollider();
+        }
+
+        else
+            bAX = 0;
+
        if(i != current)
         {
             //double distance2 = sqrt((this->x - Ball[i].x)*(this->x - Ball[i].x) + (this->y - Ball[i].y)*(this->y - Ball[i].y));
             double d2 =distance2(this->x, this->y, Ball[i].x, Ball[i].y);
-            if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r) && this->y >= 200)
+            if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r) && this->y >= 150)
             {
-                if(Ball[i].bPosY < 200 || this->bPosY < 200){
+                if(Ball[i].bPosY <= 150 || this->bPosY <= 150){
                     cnt++;
                     if (cnt == 5)
                     {
-                        cout << "Game Over" << " ";
+                        GameOver = true;
                         cnt = 0;
                     }
                 }

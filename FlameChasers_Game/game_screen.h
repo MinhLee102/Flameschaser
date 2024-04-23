@@ -13,13 +13,19 @@ public:
     ~game_screen();
 
     //Load image at specified path
-    bool loadImg(std::string path, SDL_Renderer* gRenderer);
+    bool loadImg(string path, SDL_Renderer* gRenderer);
+
+    bool loadText(string text, SDL_Color TextColor, SDL_Renderer* gRenderer, TTF_Font* font);
 
     //Deallocate texture
     void free();
 
     //Render Texture at given point
     void render(int x, int y, SDL_Renderer* gRenderer);
+
+    //adjust Render position
+    int updateRenderPosX(const int x);
+    int updateRenderPosY(const int y);
 
     //Get image dimensions
     int getWidth();
