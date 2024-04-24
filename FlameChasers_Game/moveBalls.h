@@ -30,7 +30,7 @@ public:
     void reset();
 
     //Take key press and adjust velocity;
-    void handleEvent(SDL_Event &e, bool &drop);
+    void handleEvent(SDL_Event &e, bool drop[], const int &UsedBalls);
 
     void gravity(bool &checkGrav);
 
@@ -39,7 +39,8 @@ public:
     void destroyCollider(Circle& a);
 
     //Move the ball and handle collision
-    void motionNcollision(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool &GameOver);
+    void motionNcollision(movement Ball_move[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[],
+                          int current, bool &GameOver, Mix_Chunk* Pop);
 
     void updateRenderPos();
 
@@ -50,6 +51,8 @@ public:
     int getBallVelX(){return bVelX;};
 
     int getBallVelY(){return bVelY;};
+
+    double getAngle(){return degrees;};
 
     Circle& getCollider();
 
@@ -77,11 +80,13 @@ private:
     //Moves the collision circle relative to the dot's offset
     void shiftCollider();
 
-    bool checkGrav;
-};
+    //rotation angle
+    double degrees;
 
-    //Check collision between 2 balls
-    bool checkCollision(Circle &a, Circle& b);
+    bool checkGrav;
+
+    int prevX;
+};
 
     //Check distances between two points
     double distance2(int x1, int y1, int x2, int y2);

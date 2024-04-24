@@ -2,9 +2,6 @@
 
 movement::movement(){
     //Init position
-//    bPosX = SCREEN_WIDTH/2 - 20;
-//    bPosY = SCREEN_HEIGHT/4 - 30;
-
     this->x = StartPosX;
     this->y = StartPosY;
 
@@ -17,12 +14,11 @@ movement::movement(){
     bAY = 0;
 
     checkGrav = false;
+    degrees = 0;
 }
 
 void movement::reset(){
-//    bPosX = SCREEN_WIDTH/2 - 20;
-//    bPosY = SCREEN_HEIGHT/4 - 20;
-
+    //Reset to initial position
     this->x = StartPosX;
     this->y = StartPosY;
 
@@ -35,6 +31,7 @@ void movement::reset(){
     bAY = 0;
 
     checkGrav = false;
+    degrees = 0;
 }
 
 Circle& movement::getCollider(){
@@ -42,6 +39,7 @@ Circle& movement::getCollider(){
 }
 
 void movement::createCollider(){
+    //set collider center to ball center and radius
     mCollider.x = this->x;
     mCollider.y = this->y;
     mCollider.r = Ball_Width/2;
@@ -65,13 +63,12 @@ void movement::createCollider(){
 }
 
 void movement::shiftCollider(){
-//    mCollider.x = bPosX + Ball_Width/2;
-//    mCollider.y = bPosY + Ball_Height/2;
+    //shift collider according to ball current position
     mCollider.x = this->x;
     mCollider.y = this->y;
 }
 
-void movement::handleEvent(SDL_Event &e, bool &drop){
+void movement::handleEvent(SDL_Event &e, bool drop[], const int &UsedBalls){
     //if key pressed
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
@@ -86,11 +83,11 @@ void movement::handleEvent(SDL_Event &e, bool &drop){
                 break;
             case SDLK_DOWN:
                 checkGrav = true;
-                drop = true;
+                drop[UsedBalls] = true;
                 break;
         }
     }
-        else if (e.type == SDL_KEYUP && e.key.repeat == 0)
+    else if (e.type == SDL_KEYUP && e.key.repeat == 0)
         {
             switch (e.key.keysym.sym)
             {
@@ -105,8 +102,11 @@ void movement::handleEvent(SDL_Event &e, bool &drop){
 }
 
 void movement::destroyCollider(Circle& a){
+    //shift collider outside of screen
     a.x = -20;
     a.y = -20;
+
+    //set radius back to zero
     a.r = 0;
     a.m = 0;
 }
@@ -116,7 +116,8 @@ void movement::changeRadiusnMass(Circle& a, int newDiameter){
     a.m += 2;
 }
 
-void movement::motionNcollision(movement Ball[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[], int current, bool &GameOver){
+void movement::motionNcollision(movement Ball[], int n, bool merger[], int ball_num[], SDL_Rect ballClips[],
+                                int current, bool &GameOver, Mix_Chunk* Pop){
 //Apply Gravity
 if(checkGrav == true){
         this->y += Ball_Vel;
@@ -139,32 +140,7 @@ if(checkGrav == true){
     this->x += bVelX;
     this->y += bVelY;
 
-//    //check collision with bottom
-//    if(mCollider.y + mCollider.r >= GAME_BOTTOM){
-//        this->y = GAME_BOTTOM - mCollider.r;
-//        this->bVelY = -1 * bVelY * 0.2;
-//        shiftCollider();
-//    }
-//    //check collision with sides of box
-//    if(this->x - mCollider.r <= GAME_LEFT_SIDE)
-//    {
-//        this->x = GAME_LEFT_SIDE + mCollider.r;
-//        bVelX = -1*bVelX*0.2;
-//        bAX = 0.1;
-//        shiftCollider();
-//    }
-//    else if (mCollider.x + mCollider.r >= GAME_RIGHT_SIDE)
-//    {
-//        this->x = GAME_RIGHT_SIDE - mCollider.r;
-//        bVelX = -1*bVelX*0.2;
-//        bAX = -0.1;
-//        shiftCollider();
-//    }
-//
-//    else
-//        bAX = 0;
-
-    //cout << bVelX << " " << bVelY;
+    this->prevX = this->x;
 }
 else{
     //Move the ball left or right
@@ -179,61 +155,76 @@ else{
     //Check collision
     for (int i = 0; i < n; i++)
     {
+        //check collision with bottom border
         if(Ball[i].y + Ball[i].mCollider.r >= GAME_BOTTOM){
             Ball[i].y = GAME_BOTTOM - Ball[i].mCollider.r;
             Ball[i].bVelY = -1 * Ball[i].bVelY * 0.2;
             Ball[i].shiftCollider();
         }
 
-        //
+        //check collision with left side border
         if(this->x - mCollider.r - 1 <= GAME_LEFT_SIDE && this->y > SCREEN_HEIGHT/4 - 30)
         {
             this->x = GAME_LEFT_SIDE + mCollider.r;
             bVelX = -1*bVelX*0.2;
             bAX = 0.1;
+            this->prevX = GAME_LEFT_SIDE + mCollider.r;
             shiftCollider();
         }
+        //check collision with right side border
         else if (mCollider.x + mCollider.r + 1 >= GAME_RIGHT_SIDE && this->y > SCREEN_HEIGHT/4 - 30)
         {
             this->x = GAME_RIGHT_SIDE - mCollider.r;
             bVelX = -1*bVelX*0.2;
             bAX = -0.1;
+            this->prevX = GAME_RIGHT_SIDE - mCollider.r;
             shiftCollider();
         }
-
         else
             bAX = 0;
 
+       //if ball is not the current ball
        if(i != current)
         {
-            //double distance2 = sqrt((this->x - Ball[i].x)*(this->x - Ball[i].x) + (this->y - Ball[i].y)*(this->y - Ball[i].y));
-            double d2 =distance2(this->x, this->y, Ball[i].x, Ball[i].y);
+            //Calculate distance between 2 balls center
+            double d2 = distance2(this->x, this->y, Ball[i].x, Ball[i].y);
+
+            //check collision if distance square <= sum of two ball radius square
             if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r) && this->y >= 150)
             {
-                if(Ball[i].bPosY <= 150 || this->bPosY <= 150){
+
+                if(Ball[i].bPosY <= LinePosY || this->bPosY <= LinePosY){
                     cnt++;
-                    if (cnt == 5)
+                    if (cnt == 10)
                     {
                         GameOver = true;
                         cnt = 0;
                     }
                 }
+                //check merge condition: radius are the same and it is not the last ball (Radius = 65)
                 else if(Ball[i].getCollider().r == this->getCollider().r && this->mCollider.r != 65 && Ball[i].y > SCREEN_HEIGHT/4 )
                 {
                     //destroy collision box of 1 ball
                     destroyCollider(Ball[i].getCollider());
 
-                    //added in array of add ball
+                    //added in array of merged ball
                     merger[i] = true;
+
+                    //sound effect when merges
+                    Mix_PlayChannel(-1, Pop, 0);
 
                     //upgrade balls
                     ball_num[current]++;
                     Ball[current].Ball_Height = ballClips[ball_num[current]].h;
                     Ball[current].Ball_Width = ballClips[ball_num[current]].w;
+
+                    //Correct ball positions
                     int prevRad = mCollider.r;
                     Ball[current].changeRadiusnMass(this->getCollider(),this->Ball_Width);
                     this->y = this->y - (this->getCollider().r - prevRad);
                     this->shiftCollider();
+
+                    SDL_Delay(50);
                 }
                 else
                 {
@@ -248,12 +239,27 @@ else{
                         Ball[i].bVelX += p * this->getCollider().m * nx;
                         Ball[i].bVelY += p * this->getCollider().m * ny;
 
+                        prevX = this->x;
+                        Ball[i].prevX = Ball[i].x;
+
                         //seperate the ball to avoid overlapping
                         double overLap = (this->getCollider().r + Ball[i].getCollider().r - sqrt(d2))/2;
                         this->x -= overLap * nx;
                         this->y -= overLap * ny;
                         Ball[i].x += overLap * nx;
                         Ball[i].y += overLap * ny;
+
+                        //Add angle to make the ball roll
+                        if(this->x - prevX > 0)
+                            this->degrees++;
+                        if(this->x - prevX < 0)
+                            this->degrees--;
+
+                        if(Ball[i].x - prevX > 0)
+                            Ball[i].degrees++;
+                        if(Ball[i].x - prevX < 0)
+                            Ball[i].degrees--;
+
                     }
                     Ball[i].shiftCollider();
                     this->shiftCollider();
@@ -261,6 +267,9 @@ else{
 
             }
         }
+        this->prevX = this->x;
+        Ball[i].prevX = Ball[i].x;
+
     }
 
     //Reset acceleration
@@ -273,23 +282,9 @@ void movement::updateRenderPos(){
     bPosY = this->y - Ball_Height/2;
 }
 
+//Calculate distance between two point on screen
 double distance2(int x1, int y1, int x2, int y2){
     return (x1-x2)*(x1-x2) + (y1 - y2)*(y1 - y2);
 }
 
-bool checkCollision(Circle& a, Circle& b){
-    bool check = false;
-
-    int TotalRadius2 = (a.r + b.r)*(a.r + b.r);
-
-    //Collision happens when distance between centers smaller than radius of 2 circles combined
-    if (TotalRadius2 >= distance2(a.x, a.y, b.x, b.y))
-        {
-            check = true;
-            //distance = sqrt(distance2(a.x, a.y, b.x, b.y));
-        }
-    else
-        check = false;
-    return check;
-}
 

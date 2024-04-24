@@ -13,13 +13,14 @@ public:
     ~gBalls();
 
     //Load img
-    bool loadImage(string path, SDL_Renderer* gRenderer);
+    bool loadImage(std::string path, SDL_Renderer* gRenderer);
 
     //Deallocate texture
     void free();
 
     //render texture at given position
-    void render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect *clip = NULL);
+    void render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect *clip = NULL, double angle = 0.0,
+                SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
     //Get image dimension
     int getWidth();

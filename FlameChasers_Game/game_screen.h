@@ -40,9 +40,5 @@ private:
     int mHeight;
 };
 
-////Game screen
-//game_screen StageTexture;
-//
-//game_screen bgTexture;
 
 #endif // GAME_SCREEN_H

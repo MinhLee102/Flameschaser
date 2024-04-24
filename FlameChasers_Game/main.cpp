@@ -10,12 +10,21 @@ SDL_Window* gWindow = NULL;
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
 
+//The music that will be played
+Mix_Music* Piano = NULL;
+
+//The sound effect that will be used
+Mix_Chunk* Pop = NULL;
+
 //Game screen
 game_screen StageTexture;
 game_screen bgTexture;
 
 //Game menu
 game_screen menu;
+
+//Game tutorial
+game_screen tutorial;
 
 //GameOver screen
 game_screen End;
@@ -70,12 +79,12 @@ int main(int argc, char* args[]){
             //init score
             int score = 0;
 
-            //Init menu flags
+            //Init menu & tutorial flags
             bool isMenu = true;
+            bool isTutorial = true;
 
             //Init flag to track Game over condition
             bool GameOver = false;
-
 
             //Handle event
             SDL_Event e;
@@ -85,17 +94,25 @@ int main(int argc, char* args[]){
             //In memory text stream
             stringstream timeText;
 
+            //Keep track of ball that were drop
+            set<int> droppedBall;
+
+            //Keep track of ball that were merged
+            set<int> mergedBall;
+
             //Create Ball's movement
             movement Ball_move[400];
 
             //init flag
             bool merger[400];
-            bool isDrop = false;
+
+            //bool isDrop = false;
+            bool isDrop[400];
 
             int ball_num[400];
 
-            for (int i = 0; i < 350; i++)
-                ball_num[i] = rand()%4;
+            for (int i = 0; i < 400; i++)
+                ball_num[i] = rand()%3;
 
             while (!quit)
             {
@@ -105,8 +122,42 @@ int main(int argc, char* args[]){
                     if (e.type == SDL_QUIT)
                         quit = true;
 
+                    //Handle key press
+                    else if(e.type == SDL_KEYDOWN)
+                    {
+                        switch(e.key.keysym.sym )
+                        {
+                            case SDLK_l:
+                                //if there is no music playing
+                                if( Mix_PlayingMusic() == 0)
+                                {
+                                    //Play the music
+                                    Mix_PlayMusic(Piano, -1);
+                                }
+                                //if music is being played
+                                else
+                                {
+                                    //If the music is paused
+                                    if( Mix_PausedMusic() == 1)
+                                        //Resume music
+                                        Mix_ResumeMusic();
+
+                                    //if the music is playing
+                                    else
+                                        //paused the music
+                                        Mix_PauseMusic();
+                                }
+                                break;
+
+                            case SDLK_m:
+                                //Stop the music
+                                Mix_HaltMusic();
+                                break;
+                        }
+                    }
+
                     //Handle input for ball
-                    Ball_move[UsedBalls].handleEvent(e, isDrop);
+                    Ball_move[UsedBalls].handleEvent(e, isDrop, UsedBalls);
                 }
 
                 //create game's menu
@@ -114,8 +165,13 @@ int main(int argc, char* args[]){
                 SDL_RenderClear(gRenderer);
                 menu.free();
 
+                //render game tutorial
+                Guide(isTutorial, gRenderer, tutorial, m);
+                SDL_RenderClear(gRenderer);
+                tutorial.free();
+
                 //Update score
-                HighScore(UsedBalls, merger, score);
+                HighScore(UsedBalls, isDrop, score, droppedBall, merger, mergedBall);
 
                 //Set text to render
                 timeText.str(" ");
@@ -133,6 +189,7 @@ int main(int argc, char* args[]){
 
                 frameStart = SDL_GetTicks();
 
+                //Create new ball on the screen
                 Ball_move[UsedBalls].Ball_Width = ballClips[ball_num[UsedBalls]].w;
                 Ball_move[UsedBalls].Ball_Height = ballClips[ball_num[UsedBalls]].h;
                 Ball_move[UsedBalls].createCollider();
@@ -158,28 +215,28 @@ int main(int argc, char* args[]){
                 for (int i = 0; i <= UsedBalls; i++){
                     if (merger[i] == true)
                         continue;
-                    Ball_move[i].motionNcollision(Ball_move, UsedBalls, merger, ball_num, ballClips, i, GameOver);
+                    Ball_move[i].motionNcollision(Ball_move, UsedBalls, merger, ball_num, ballClips, i, GameOver, Pop);
                     Ball_move[i].updateRenderPos();
-                    ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer, &ballClips[ball_num[i]]);
+                    ball.render(Ball_move[i].getBallPosX(), Ball_move[i].getBallPosY(), gRenderer,
+                                &ballClips[ball_num[i]], Ball_move[i].getAngle(), NULL, SDL_FLIP_NONE);
                 }
 
                 //print Highscore to the screen
-                word.render(ScorePosX, ScorePosY, gRenderer);
-
-                //Render end screen if conditions are met
-                GameEnd(GameOver, quit, UsedBalls, bgTexture, StageTexture, ball, End, gov, gRenderer, ball_num, merger, Ball_move, score, bestscr);
+                word.render(word.updateRenderPosX(ScorePosX), word.updateRenderPosY(ScorePosY), gRenderer);
 
                 //count the number of the balls were used
-                if(isDrop == true){
+                if(isDrop[UsedBalls] == true){
                     UsedBalls++;
-                    isDrop = false;
                 }
 
-                //SDL_RenderDrawLine(gRenderer, 0, 150, SCREEN_WIDTH, 150);
+                //Render end screen if conditions are met
+                GameEnd(GameOver, quit, UsedBalls, bgTexture, StageTexture, ball, End, gov, gRenderer, ball_num,
+                        merger, Ball_move, score, bestscr, isDrop, droppedBall, mergedBall);
+
                 //Update screen
                 SDL_RenderPresent(gRenderer);
 
-                //cout << HighScore(UsedBalls, merger) << " ";
+
                 frameTime = SDL_GetTicks() - frameStart;
 
                 if (frameDelay > frameTime)
@@ -245,6 +302,13 @@ bool init(){
 					printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
 					success = false;
 				}
+
+				//Initialize SDL_Mixer
+				if( Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+                {
+                    printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+                    success = false;
+                }
             }
         }
     }
@@ -267,21 +331,36 @@ bool loadMedia(){
         cout << "Failed to load Background! " << endl;
         success = false;
     }
+
+    //Load menu
     if (!menu.loadImg("img/startMenuv4.png", gRenderer))
     {
         cout << "Failed to load Menu! " << endl;
         success = false;
     }
+
+    //Load tutorial
+    if(!tutorial.loadImg("img/tutorial.png", gRenderer))
+    {
+        cout << "Failed to load tutorial! \n";
+        success = false;
+    }
+
+    //Load ball img
     if (!ball.loadImage("img/allCharacters.png", gRenderer))
     {
         cout << "Failed to load Object \n";
         success = false;
     }
-    if(!End.loadImg("img/Game_overv2.png", gRenderer))
+
+    //Load game over screen
+    if(!End.loadImg("img/Game_overv4.png", gRenderer))
     {
         cout << "Failed to load End Screen \n";
         success = false;
     }
+
+    //Load font
     font = TTF_OpenFont("ShadeBlue.ttf", 28);
     if(font == NULL)
     {
@@ -296,6 +375,22 @@ bool loadMedia(){
         success = false;
     }
 
+    //Load music
+    Piano = Mix_LoadMUS("Sound/Scott Buckley - Jul.mp3");
+    if(Piano == NULL)
+    {
+        cout << "Failed to load music \n";
+        success = false;
+    }
+
+    //Load sound effect
+    Pop = Mix_LoadWAV("Sound/Popping_sound.wav");
+    if(Pop == NULL)
+    {
+        cout << "Failed to load sound effect \n";
+        success = false;
+    }
+
     //Select sprite
     ballClips[0].x = 60;
     ballClips[0].y = 0;
@@ -306,11 +401,6 @@ bool loadMedia(){
     ballClips[1].y = 0;
     ballClips[1].w = 60;
     ballClips[1].h = 46;
-
-//    ballClips[2].x = 100;
-//    ballClips[2].y = 0;
-//    ballClips[2].w = 100;
-//    ballClips[2].h = 93;
 
     ballClips[2].x = 200;
     ballClips[2].y = 0;
@@ -337,11 +427,6 @@ bool loadMedia(){
     ballClips[6].w = 130;
     ballClips[6].h = 127;
 
-//    if (! ball[1].loadImage("img/Griseo_ballv2.png", gRenderer))
-//    {
-//        cout << "Failed to load Object \n";
-//        success = false;
-//    }
     return success;
 }
 
@@ -350,6 +435,7 @@ void close(){
     StageTexture.free();
     bgTexture.free();
     menu.free();
+    tutorial.free();
     ball.free();
     End.free();
     word.free();
@@ -361,6 +447,14 @@ void close(){
 	font = NULL;
 	bestscore = NULL;
 
+	//Free the music
+	Mix_FreeMusic(Piano);
+	Piano = NULL;
+
+	//Free sound effect
+	Mix_FreeChunk(Pop);
+	Pop = NULL;
+
     //Destroy window
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
@@ -368,6 +462,7 @@ void close(){
     gWindow = NULL;
 
     // Quit SDL Subsystems
+    Mix_Quit();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();

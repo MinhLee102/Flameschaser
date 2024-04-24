@@ -6,5 +6,7 @@
 
 void openMenu(bool &isMenu, SDL_Renderer *gRenderer, game_screen &menu, SDL_Event &m);
 
+void Guide(bool &isTutorial, SDL_Renderer *gRenderer, game_screen &tutorial, SDL_Event &m);
+
 
 #endif // MENU
