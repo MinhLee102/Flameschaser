@@ -192,7 +192,7 @@ else{
             //check collision if distance square <= sum of two ball radius square
             if(d2 <= (this->mCollider.r + Ball[i].getCollider().r)* (this->mCollider.r + Ball[i].getCollider().r) && this->y >= 150)
             {
-
+                //Game over condition
                 if(Ball[i].bPosY <= LinePosY || this->bPosY <= LinePosY){
                     cnt++;
                     if (cnt == 10)

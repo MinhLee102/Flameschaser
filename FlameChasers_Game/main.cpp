@@ -59,6 +59,8 @@ int main(int argc, char* args[]){
     //Limit framerate
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
+
+    //randomize number
     srand(time(0));
 
     Uint32 frameStart;

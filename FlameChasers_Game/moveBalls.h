@@ -32,8 +32,6 @@ public:
     //Take key press and adjust velocity;
     void handleEvent(SDL_Event &e, bool drop[], const int &UsedBalls);
 
-    void gravity(bool &checkGrav);
-
     void changeRadiusnMass(Circle& a, int newDiameter);
 
     void destroyCollider(Circle& a);
