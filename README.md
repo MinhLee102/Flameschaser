@@ -13,6 +13,20 @@ Game: FlameChasers Game.
 # Giới thiệu Game
 Flame Chasers Game là một tựa game thuộc thể loại của 2048, nhưng với những nét mới lạ hơn. Thay vì những con số và những hình vuông nhàm chán, Flame Chasers Game sẽ mang đến những khối tròn với đa dạng màu sắc, với mong muốn đem lại những trải nghiệm tuyệt vời, đặc sắc hơn. Mục tiêu của trò chơi là tìm cách hợp nhất càng nhiều quả bóng với nhau càng tốt để đạt được điểm số cao nhất. Chỉ 2 quả bóng giống nhau mới có thể hợp nhất lại. 
 
+## Table of Contents 
+- [I. Cách tải game](#i-cách-tải-game)
+- [II. Những thành phần cơ bản](#ii-những-thành-phần-cơ-bản)
+- [III. Cách chơi](#iii-cách-chơi)
+    - [1. Những quả bóng trong game](#1-những-quả-bóng-trong-game)
+    - [2. Những thao tác trong game](#2-những-thao-tác-trong-game)
+- [IV. Về đồ họa game](#iv-về-đồ-họa-game)
+- [V. Về source code](#v-về-source-code)
+- [VI. Tổng Kết](#vi-tổng-kết)
+    - [Các kĩ thuật sử dụng](#các-kĩ-thuật-sử-dụng)
+    - [Nguồn tham khảo - Reference list](#nguồn-tham-khảo---reference-list)
+    - [Điều đã học được](#điều-đã-học-được)
+    - [Hướng phát triển cho game](#hướng-phát-triển-cho-game)
+- [VII. Kết luận](#vii-kết-luận)
 
 # I. Cách tải game:
 	#Lưu ý: Do có cả source code nên cần cài đặt mingw và thư viện SDL2.
@@ -103,7 +117,7 @@ Game sẽ hiển thị quả bóng kế tiếp được xuất hiện ở bên t
     + Chứa hàm để in ra màn hình game over khi có một điều kiện nhất định 
 
 # VI. Tổng Kết
-## 1. Các kĩ thuật sử dụng
+## Các kĩ thuật sử dụng
 - Gồm các kỹ thuật lập trình cơ bản: vòng lặp, cấu trúc rẽ nhánh, mảng, …
 - Sử dụng con trỏ, set.
 - Tạo class để quản lý các thành phần của game, chia thành các file header, .cpp.
