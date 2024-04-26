@@ -1,4 +1,4 @@
-# Introduction
+# **Introduction**
 Họ và Tên: Lê Đức Minh		- Lớp: K68J
 
 MSSV: 23020683
@@ -7,7 +7,8 @@ Game: FlameChasers Game.
 
 # **FlameChasers Game - A new kind of 2048 Game**
 
-## Video demo game và giới thiệu về source code: 
+## Video demo game và giới thiệu về source code: <https://youtu.be/jsCDNLsGk6Y>
+
 
 # Giới thiệu Game
 Flame Chasers Game là một tựa game thuộc thể loại của 2048, nhưng với những nét mới lạ hơn. Thay vì những con số và những hình vuông nhàm chán, Flame Chasers Game sẽ mang đến những khối tròn với đa dạng màu sắc, với mong muốn đem lại những trải nghiệm tuyệt vời, đặc sắc hơn. Mục tiêu của trò chơi là tìm cách hợp nhất càng nhiều quả bóng với nhau càng tốt để đạt được điểm số cao nhất. Chỉ 2 quả bóng giống nhau mới có thể hợp nhất lại. 
@@ -15,7 +16,10 @@ Flame Chasers Game là một tựa game thuộc thể loại của 2048, nhưng 
 
 # I. Cách tải game:
 	#Lưu ý: Do có cả source code nên cần cài đặt mingw và thư viện SDL2.
-- Mọi người có thể clone repo này về máy tính hoặc tải về file Source_code.zip. Sau đó chạy file FlameChasers.exe để vào trò chơi.
+- Nếu không cần xem code thì mọi người có thể tải file FlameChasers.zip (~ 28Mb), extract và chạy file FlameChasers.exe để vào game. \
+<https://github.com/MinhLee102/Flameschaser/releases/tag/release>
+
+- Mọi người có thể clone repo này về máy tính hoặc tải về file Source_Code.zip. Sau đó chạy file FlameChasers.exe để vào trò chơi.
 - Nếu muốn xem source code thì có thể vào các file .cpp hoặc dùng CodeBlocks và click vào FlameChasers.cbp để mở Project. 
 
 # II. Những thành phần cơ bản 
