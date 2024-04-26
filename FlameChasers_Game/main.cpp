@@ -204,6 +204,12 @@ int main(int argc, char* args[]){
                 //Render GameStage to Screen
                 StageTexture.render(SCREEN_WIDTH/3, SCREEN_HEIGHT/3, gRenderer);
 
+                //Draw upper line
+                for (int i = GAME_LEFT_SIDE; i <= GAME_RIGHT_SIDE; i += 5)
+                {
+                    SDL_RenderDrawPoint(gRenderer, i, 160);
+                }
+
                 //Set next ball render position
                 int RPosX = Next_Ball_Center_X - ballClips[ball_num[UsedBalls+1]].w/2;
                 int RPosY = Next_Ball_Center_Y - ballClips[ball_num[UsedBalls+1]].h/2;
